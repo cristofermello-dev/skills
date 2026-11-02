@@ -1,6 +1,6 @@
 # 🚀 Hostinger Deploy Skill Template para Google Antigravity
 
-[![Antigravity Skill](https://img.shields.io/badge/Antigravity-Skill%20v1.0-blue.svg)](https://antigravity.google)
+[![Antigravity Skill](https://img.shields.io/badge/Antigravity-Skill%20v1.1-blue.svg)](https://antigravity.google)
 [![Hostinger MCP](https://img.shields.io/badge/Hostinger-MCP%20Compatible-7c3aed.svg)](https://hostinger.com)
 [![Node.js](https://img.shields.io/badge/Node.js-18%20|%2020%20|%2022-brightgreen.svg)](https://nodejs.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -14,8 +14,9 @@ Este repositório é **100% genérico e livre de dados pessoais ou credenciais**
 
 ## ✨ Principais Funcionalidades
 
-- 🧙‍♂️ **Wizard de Primeira Execução:** Quando a skill é chamada pela primeira vez em um novo ambiente ou projeto, ela detecta a ausência de configuração e guia o usuário com perguntas simples **uma por uma (1 a 1)**.
-- ⚡ **Deploy 100% Autônomo:** Após configurada, as próximas publicações acontecem de forma direta, sem confirmações repetitivas ou travas no chat.
+- ⚡ **Auto-Start no Fim da Instalação:** Ao pedir para o Antigravity baixar ou instalar a skill, ele **automaticamente inicia o Wizard de Configuração na mesma resposta**, sem precisar que o usuário digite nenhum comando extra!
+- 🧙‍♂️ **Wizard de Configuração Guiado (1 por 1):** O assistente faz perguntas amigáveis e estruturadas, aguardando uma resposta por vez antes de prosseguir.
+- 🚀 **Deploy 100% Autônomo:** Após configurada, as próximas publicações acontecem de forma direta, sem confirmações repetitivas ou travas no chat.
 - 📊 **Interface com Stepper Visual:** Acompanhamento do progresso com gráfico de fluxo Mermaid, ícones e tabela de status em tempo real.
 - 📜 **Logs Técnicos em Acordeão Fechado:** Mantém o chat limpo através de blocos retráteis (`<details>`), eliminando poluição visual no terminal.
 - 🔒 **Segurança Total (Zero Leaks):** Credenciais e configurações locais ficam isoladas no arquivo `config.json` protegido pelo `.gitignore`.
@@ -26,17 +27,14 @@ Este repositório é **100% genérico e livre de dados pessoais ou credenciais**
 
 ```mermaid
 graph TD
-    A[Usuário: 'atualizar hospedagem' ou 'deploy'] --> B{Existe config.json?}
-    B -- NÃO (1ª Execução) --> C[Inicia Wizard Interativo Passo a Passo]
-    C --> D[Pergunta e valida dados 1 por 1]
+    A[Usuário: 'Instale a skill do repositório...'] --> B[Clone / Instalação da Skill]
+    B --> C[⚡ Disparo Automático: Wizard de Configuração]
+    C --> D[Assistente pergunta dados 1 por 1 e valida]
     D --> E[Salva config.json localmente]
     E --> F[Inicia 1º Deploy com Stepper Visual]
-    B -- SIM (Uso Diário) --> G[Lê config.json diretamente]
-    G --> H[Git Sync + Criação de Pacote .tar.gz]
-    H --> I[Upload via Hostinger Storage API / TUS]
-    I --> J[Build Node.js na Hostinger Cloud]
-    J --> K[Restart do App & Purge de Cache]
-    K --> L[Verificação Live HTTP 200 OK]
+    G[Uso Diário: 'atualizar hospedagem' ou 'deploy'] --> H{Existe config.json?}
+    H -- SIM --> I[Lê config.json e executa Deploy Autônomo]
+    H -- NÃO --> C
 ```
 
 ---
@@ -45,12 +43,14 @@ graph TD
 
 ```text
 hostinger-deploy-template/
-├── SKILL.md              # Regras de comportamento e prompts para o Antigravity
+├── SKILL.md              # Regras, triggers e prompts do Antigravity
 ├── config.example.json   # Exemplo limpo da estrutura de configuração
 ├── .gitignore            # Protege credenciais locais, pacotes e caches
+├── LICENSE               # Licença oficial MIT
 ├── README.md             # Esta documentação
 └── scripts/
     ├── package.sh        # Script shell para sincronização Git e geração do .tar.gz
+    ├── setup_wizard.sh   # Assistente interativo via CLI
     └── verify_mcp.js     # Validador de integridade das ferramentas MCP Hostinger
 ```
 
@@ -74,41 +74,36 @@ Para que o Antigravity consiga se comunicar com a Hostinger, o servidor MCP ofic
 }
 ```
 
-> [!NOTE]
-> As credenciais da Hostinger são autenticadas uma única vez e salvas com segurança no diretório padrão do usuário (`~/.config/hostinger-mcp/credentials.json`).
-
 ---
 
 ## 📥 Como Instalar a Skill
 
 ### Opção 1: Diretamente pelo Chat do Antigravity (Recomendado)
 Basta solicitar ao assistente no chat:
-> *"Baixe e instale a skill de deploy da Hostinger do repositório: `https://github.com/SEU-USUARIO/hostinger-deploy-template`"*
+> *"Baixe e instale a skill de deploy da Hostinger do repositório: `https://github.com/cristofermello-dev/skills`"*
+
+> [!TIP]
+> **Inicialização Automática**: Assim que o download for concluído, o assistente **já iniciará o Wizard de Configuração imediatamente na mesma resposta**, fazendo a Pergunta 1/5!
 
 ### Opção 2: Instalação Global (Disponível em todos os projetos)
 Clone o repositório na pasta de skills globais do Antigravity:
 ```bash
-git clone https://github.com/SEU-USUARIO/hostinger-deploy-template.git ~/.gemini/config/skills/hostinger-deploy-template
+git clone https://github.com/cristofermello-dev/skills.git ~/.gemini/config/skills/hostinger-deploy-template
 ```
 
 ### Opção 3: Instalação por Projeto (Apenas no repositório atual)
 Clone dentro da pasta `.agents/skills` do seu projeto:
 ```bash
 mkdir -p .agents/skills
-git clone https://github.com/SEU-USUARIO/hostinger-deploy-template.git .agents/skills/hostinger-deploy-template
+git clone https://github.com/cristofermello-dev/skills.git .agents/skills/hostinger-deploy-template
 ```
 
 ---
 
 ## 🎯 Como Utilizar
 
-### 1. Primeira Execução (Wizard Guiado)
-Basta digitar no chat qualquer uma das frases de ativação:
-- *"deploy hostinger"*
-- *"atualizar hospedagem"*
-- *"configurar deploy hostinger"*
-
-O assistente detectará que é a primeira vez e fará 5 perguntas amigáveis, **uma por uma**:
+### 1. Wizard de Configuração (Auto-iniciado ou sob demanda)
+O assistente guiará a configuração com 5 perguntas objetivas, **uma por uma**:
 
 1. **Domínio:** O domínio cadastrado na Hostinger (ex: `meusite.com.br`).
 2. **Usuário Hostinger (`username`):** O usuário da conta (ex: `u123456789`, exibido no painel hPanel).
@@ -181,7 +176,7 @@ graph LR
 
 ---
 
-### 4. Reconfiguração (Trocar de Projeto ou Domínio)
+### 4. Reconfiguração
 Se você trocar de projeto, domínio ou conta, basta digitar no chat:
 > *"reconfigurar deploy"*
 
@@ -193,12 +188,6 @@ O assistente reiniciará o Wizard interativo e atualizará o arquivo `config.jso
 
 - **Sem Credenciais Embutidas:** Nenhum dado pessoal, token de acesso pessoal do GitHub (`ghp_...`) ou credenciais da Hostinger são armazenados neste repositório.
 - **Isolamento de Máquina:** O arquivo `config.json` e eventuais pacotes `.tar.gz` são listados no `.gitignore` e ficam restritos à máquina local onde o deploy é executado.
-
----
-
-## 🤝 Contribuições
-
-Contribuições, correções de bugs e melhorias são bem-vindas! Sinta-se à vontade para abrir uma *Issue* ou enviar um *Pull Request*.
 
 ---
 

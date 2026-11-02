@@ -2,10 +2,13 @@
 name: hostinger-deploy-template
 description: |
   Universal automated deployment procedure for web applications (Node.js/Express/Next/Static) on Hostinger.
+  MANDATORY AUTO-START ON INSTALL: Immediately after installing, downloading, or cloning this skill, the agent MUST automatically begin the First-Run Guided Configuration Wizard (Step 1/5) in the very same turn, without waiting for the user to ask for a deploy.
   Features a First-Run Guided Configuration Wizard (asks setup questions 1-by-1 on first run),
   and 100% autonomous zero-confirmation deployment once configured.
   Includes Visual Pipeline Stepper (stage icons, progress status) and collapsed execution console in an accordion.
   Triggers:
+  - "instalar skill hostinger"
+  - "baixar skill hostinger"
   - "deploy hostinger"
   - "atualizar hospedagem"
   - "configurar deploy hostinger"
@@ -13,7 +16,7 @@ description: |
   - "deploy no hostinger"
 license: MIT
 metadata:
-  version: v1.0.0
+  version: v1.1.0
   publisher: community
 ---
 
@@ -24,17 +27,29 @@ metadata:
 
 ---
 
+## ⚡ REGRA MANDATÓRIA: DISPARO AUTOMÁTICO NO FIM DA INSTALAÇÃO (ON-INSTALL AUTO-START)
+
+> [!IMPORTANT]
+> **AÇÃO IMEDIATA ASSIM QUE A SKILL FOR INSTALADA / BAIXADA**:
+> Se o usuário pediu para instalar, baixar ou clonar esta skill para o ambiente dele:
+> 1. Conclua o download/clone do repositório normalmente.
+> 2. **NÃO encerre a sua resposta** apenas dizendo que a skill foi instalada.
+> 3. **INICIE O WIZARD DE CONFIGURAÇÃO IMEDIATAMENTE NA MESMA RESPOSTA!**
+> 4. Envie a mensagem de boas-vindas do assistente e a **Pergunta 1/5 (Domínio)**, pausando para aguardar a resposta do usuário.
+
+---
+
 ## 🧭 Modo 1: Wizard de Primeira Execução (Configuração Passo a Passo)
 
 ### Detecção de Primeira Execução:
-Antes de iniciar o deploy, verifique se o arquivo de configuração `config.json` existe na pasta da skill ou como `.hostinger-deploy.json` na raiz do projeto.
+Antes de iniciar qualquer deploy, verifique se o arquivo de configuração `config.json` existe na pasta da skill ou como `.hostinger-deploy.json` na raiz do projeto.
 
-**Se o arquivo `config.json` NÃO existir (ou se o usuário disser "reconfigurar deploy" / "configurar deploy"):**
+**Se o arquivo `config.json` NÃO existir (ou após a instalação, ou se o usuário disser "reconfigurar deploy" / "configurar deploy"):**
 Você **DEVE** pausar o fluxo de deploy e conduzir o **Wizard Interativo**.
 Faça as perguntas **UMA POR UMA (1 por 1)**, aguardando a resposta do usuário antes de enviar a próxima pergunta:
 
 1. **Pergunta 1 (Domínio):**
-   > *"👋 Olá! Bem-vindo ao assistente de deploy da Hostinger. Não encontrei nenhuma configuração prévia para este projeto, então vamos configurar seu ambiente em poucos passos.*  
+   > *"👋 Olá! Bem-vindo ao assistente de deploy da Hostinger. A skill foi instalada com sucesso! Para começarmos, vamos configurar seu ambiente juntos em poucos passos.*  
    > 
    > **Passo 1/5:** Qual é o domínio do seu site na Hostinger? (Exemplo: `meusite.com.br`)*"
 
@@ -43,7 +58,7 @@ Faça as perguntas **UMA POR UMA (1 por 1)**, aguardando a resposta do usuário 
    > *(Dica: Geralmente começa com `u` seguido de números, como `u123456789`. Você encontra esse dado no painel hPanel da Hostinger sob 'Detalhes do Plano / Acesso SSH').*"
 
 3. **Pergunta 3 (Diretório do Projeto):**
-   > *"**Passo 3/5:** Qual é o caminho da pasta onde o projeto está localizado no seu computador? (Exemplo: `/caminho/do/projeto` ou responda `.` se for o diretório atual).* "
+   > *"**Passo 3/5:** Qual é o caminho da pasta onde o projeto está localizado no seu computador? (Exemplo: `/caminho/do/projeto` ou responda `.` se for o diretório atual aberto).* "
 
 4. **Pergunta 4 (Branch do Git):**
    > *"**Passo 4/5:** Qual branch do Git deve ser usada para o deploy? (Padrão: `main`).*"
