@@ -1,0 +1,16 @@
+# Arquivos de configuração locais (contêm credenciais e caminhos do usuário)
+config.json
+.hostinger-deploy.json
+.env
+
+# Pacotes e artefatos de deploy
+deploy_package.tar.gz
+*.tar.gz
+*.zip
+
+# Logs e arquivos temporários
+*.log
+.DS_Store
+node_modules/
+dist/
+build/

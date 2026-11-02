@@ -1,0 +1,10 @@
+{
+  "domain": "exemplo.com.br",
+  "username": "u123456789",
+  "project_path": "./",
+  "git_branch": "main",
+  "node_version": 20,
+  "app_type": "express",
+  "build_script": "build",
+  "entry_file": "server.js"
+}
